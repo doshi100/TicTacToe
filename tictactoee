@@ -1,0 +1,162 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace TicTacToC
+{
+    public partial class Game : System.Web.UI.Page
+    {
+        Table GameBoard = new Table();
+        int bordSize;
+        protected void Page_PreInit(object sender, EventArgs e)
+        {
+             bordSize = int.Parse(Request.QueryString["BordSize"]);
+            GameBoard.ID = "GameBoard";
+        }
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            CreateTable(bordSize);
+        }
+
+        protected void CreateTable(int rows)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                TableRow row = new TableRow();
+                for (int j = 0; j < rows; j++)
+                {
+                    TableCell cell = new TableCell();
+                    row.Cells.Add(cell);
+                }
+                GameBoard.Rows.Add(row);
+            }
+            this.Controls.Add(GameBoard);
+        }
+    }
+}
+
+________________________________________________________________________________ **GameBehindCode**______________________
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace TicTacToC
+{
+    public partial class OpeningPage : System.Web.UI.Page
+    {
+        private HttpCookie PLAYERX;
+       private HttpCookie PLAYERY;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if(PLAYERX!=null&& PLAYERY!=null)
+            {
+                TextBox3.Text = PLAYERY.Value;
+                TextBox2.Text = PLAYERX.Value;
+            }
+           
+
+
+        }
+
+       
+
+        protected void LinkButton1_Click(object sender, EventArgs e)
+        {
+            if (TextBox2.Text == ""&& TextBox3.Text == "")//X left size
+            {
+                massage1.Text = "write player X and player O name";
+                TextBox2.Focus();
+            }
+           else if (TextBox2.Text == "")
+            {
+                massage1.Text = "write player X name";
+                TextBox2.Focus();
+            }
+            else if (TextBox3.Text == "")
+            {
+                massage1.Text = "write player O name";
+                TextBox3.Focus();
+            }
+            else if (RadioButtonList1.SelectedValue=="")
+            {
+                massage2.Text = "please chose a bord size";
+            }
+            //   COOKIES
+            else
+            {
+                HttpCookie PLAYERX = new HttpCookie(TextBox2.Text);
+                HttpCookie PLAYERO = new HttpCookie(TextBox3.Text);
+                Response.Cookies.Add(PLAYERO);
+                Response.Cookies.Add(PLAYERX);
+
+                Response.Redirect("Game.aspx?BordSize=" + RadioButtonList1.SelectedValue);
+            }
+          
+        }
+
+        
+    }
+}
+____________________________________________________**Opening Page BehindCode**__________________________________________
+
+
+
+
+
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OpeningPage.aspx.cs" Inherits="TicTacToC.OpeningPage" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+
+<body>
+    <form id="form1" runat="server">
+        <div>
+        </div>
+        <asp:Label ID="Label1"  runat="server" style="position: relative" Text="TicTacToc"></asp:Label>
+        <br />
+        <br />
+        <br />
+        <asp:Label ID="Label2" runat="server" Text="Player X name"></asp:Label>
+        <asp:Label ID="Label3" runat="server" style="z-index: 1; left: 401px; top: 85px; position: absolute" Text="Player O name"></asp:Label>
+        <br />
+        <asp:TextBox ID="TextBox2" runat="server" ></asp:TextBox>
+        <br />
+        <asp:TextBox ID="TextBox3" runat="server" style="z-index: 1; left: 385px; top: 101px; position: absolute; right: 675px;"></asp:TextBox>
+        <br />
+        <asp:Label ID="massage1" runat="server" Text=""></asp:Label>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />
+        <asp:Label ID="Label4" runat="server" Text="Chose a bord size"></asp:Label>
+        <br />
+        <asp:Label ID="massage2" runat="server" Text=""></asp:Label>
+        <br />
+        <br />
+        <br />
+        <asp:RadioButtonList ID="RadioButtonList1" runat="server" RepeatDirection="Horizontal" style="z-index: 1; left: 8px; top: 201px; position: absolute; height: 26px; width: 475px" Width="475px">
+            <asp:ListItem Text="3X3" Value="3"></asp:ListItem>
+            <asp:ListItem Text="5X5"  Value="5"></asp:ListItem>
+            <asp:ListItem Text="7X7" Value="7"></asp:ListItem>
+        </asp:RadioButtonList>
+        <br />
+        <br />
+        <asp:LinkButton ID="LinkButton1" runat="server" OnClick="LinkButton1_Click">LinkButton</asp:LinkButton>
+    </form>
+</body>
+</html>
+
+
+_____________________________________________________________**Html Opening Page**_____________________________________________
