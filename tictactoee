@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace TicTacToC
+namespace TicTacToe_Idan
 {
     public partial class Game : System.Web.UI.Page
     {
@@ -13,12 +13,39 @@ namespace TicTacToC
         int bordSize;
         protected void Page_PreInit(object sender, EventArgs e)
         {
-             bordSize = int.Parse(Request.QueryString["BordSize"]);
+            ViewState["turn"] = true;
+            bordSize = int.Parse(Request.QueryString["BordSize"]);
             GameBoard.ID = "GameBoard";
+
         }
         protected void Page_Load(object sender, EventArgs e)
         {
             CreateTable(bordSize);
+        }
+
+
+        protected void ImageButton_Click(object sender, ImageClickEventArgs e)
+        {
+            ImageButton pressed = (ImageButton)sender;
+            string pressIden = pressed.ImageUrl;
+            bool turn = (bool)ViewState["turn"];
+            if (pressIden == "empty.png")
+            {
+                if ((bool)ViewState["turn"] == true)
+                {
+                    ImageButton button = (ImageButton)sender;
+                    button.ImageUrl = "Xsymbol.png";
+                    turn = false;
+                }
+                else if ((bool)ViewState["turn"] == false)
+                {
+                    ImageButton button = (ImageButton)sender;
+                    button.ImageUrl = "CirSymbol.png";
+                    turn = true;
+                }
+                ViewState["turn"] = turn;
+            }
+
         }
 
         protected void CreateTable(int rows)
@@ -29,14 +56,20 @@ namespace TicTacToC
                 for (int j = 0; j < rows; j++)
                 {
                     TableCell cell = new TableCell();
+                    ImageButton imagebutton = new ImageButton();
+                    imagebutton.CssClass = "GameSym";
+                    imagebutton.Click += new ImageClickEventHandler(ImageButton_Click);
+                    imagebutton.ImageUrl = "empty.png";
+                    cell.Controls.Add(imagebutton);
                     row.Cells.Add(cell);
                 }
                 GameBoard.Rows.Add(row);
             }
-            this.Controls.Add(GameBoard);
+            form1.Controls.Add(GameBoard);
         }
     }
 }
+
 
 ________________________________________________________________________________ **GameBehindCode**______________________
 
