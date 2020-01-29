@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace TicTacToe_Idan
+namespace TicTacToC
 {
     public partial class Game : System.Web.UI.Page
     {
@@ -23,10 +23,39 @@ namespace TicTacToe_Idan
             CreateTable(bordSize);
         }
 
+        protected bool RowCheck(string td)
+        {
+            bool turn = (bool)ViewState["turn"];
+            bool win= true;
+            int column = int.Parse(td[0].ToString());
+            int row = int.Parse(td[1].ToString());
+            string imgButton = td[0].ToString() + td[1].ToString() + td[0].ToString() + td[1].ToString();
+            for (int i=0;i<bordSize;i++)
+            {
 
+                ImageButton bu2 = (ImageButton)GameBoard.Rows[row].Cells[i].FindControl(imgButton);
+                string url = bu2.ImageUrl;
+                if (turn == true)
+                {
+                    if(url != "Xsymbol.png")
+                    {
+                        win = false;
+                    }
+                }
+                else if(turn == false)
+                {
+                    if(url != "CirSymbol.png")
+                    {
+                        win = false;
+                    }
+                }
+            }
+            return win;
+        }
         protected void ImageButton_Click(object sender, ImageClickEventArgs e)
         {
             ImageButton pressed = (ImageButton)sender;
+            string td = pressed.Parent.ID;
             string pressIden = pressed.ImageUrl;
             bool turn = (bool)ViewState["turn"];
             if (pressIden == "empty.png")
@@ -44,8 +73,9 @@ namespace TicTacToe_Idan
                     turn = true;
                 }
                 ViewState["turn"] = turn;
+                bool win = RowCheck(td);
             }
-
+            
         }
 
         protected void CreateTable(int rows)
@@ -56,7 +86,9 @@ namespace TicTacToe_Idan
                 for (int j = 0; j < rows; j++)
                 {
                     TableCell cell = new TableCell();
+                    cell.ID = ""+j+""+""+i+"";
                     ImageButton imagebutton = new ImageButton();
+                    imagebutton.ID = "" + j + "" + "" + i + "" +j+ "" +i+"";
                     imagebutton.CssClass = "GameSym";
                     imagebutton.Click += new ImageClickEventHandler(ImageButton_Click);
                     imagebutton.ImageUrl = "empty.png";
